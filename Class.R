@@ -96,3 +96,72 @@ library(reshape2)
 #melt & cast function to change data frame from the long to wide format
 s.wide <- dcast(data=s, value.var = "HR", formula = "lgID" ~ "teamID", fun.aggregate = mean)
 ?dcast
+
+
+
+#clas 10/9/19 ---- 
+
+#d <- read.tanle('ISIIS201405291242.txt', sep = "\t", skip = 10, header = TRUE, fileEncoding = "ISO-8859", stringASFactirs #do we want to see data as factor data = FALSE, quate = "\"", check.names =FALSE, na.strings = "9999.9")
+#date = scan('ISIIS2014052912.txt', what = "character", skip = 1, nlines =1, quiet=TRUE)
+#Know how to use str_sub and str_c. 
+#as.numeric is necessary to convert strings (which are always characters) to numeric values for math. 
+#Can use - values in string function to get last values of a string. 
+#Make date/time data usingPOSIXct and timezone specifications 
+#use format function to change timezone. 
+
+library(tidyverse)
+library(batting)
+c = aggregate(x=df$H, by =list(df$TeamID), FUN = sum)
+#can also use tapply and group_by to do the same thing. 
+# mean, median, quantile - gives you all 
+#look up ?summarise and it will show you diff commands #quantile(d$object, 0.25) gives 25% quantile of that object. 
+
+
+#merge dataframes 
+q = data.frame(id=c('a','b','c','d'), num = c(1,2,3,4))
+v = data.frame(id=c('a','b','e'), car =c(6,7,8))
+#join with rbind, left_join, merge, etc... 
+qv = merge(x=q,y=v, by = 'id')
+qv
+#by.x means x has same info but diff name. By.y is same but for y. 
+#saying all includes all parts, but if no corresponding value, get NA
+
+pv <- merge(x=q, y=v, by = 'id', all=T)
+pv
+px <- merge(x=q, y=v, by = 'id', all.x=T)
+
+py <- merge(x=q, y=v, by = 'id', all.y=T)
+py
+
+#with tidyverse, use join 
+
+#check out wrangling cheat sheet 
+
+#melt and cast ---- 
+library(reshape2)
+library(nutshell)
+m <- data("batting.2008")
+m <- batting.2008
+df <- m
+m = melt(data=df, id.vars=c('teamID'), measure.vars = c('H','AB'))
+m %>% group_by(teamID) %>% summarise(n=n())
+cast = dcast(m, value ~ teamID, mean)
+m
+g <- df %>% group_by(teamID)%>%gather(key = 'hits', 'amount', 'H':'HR')
+g
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
