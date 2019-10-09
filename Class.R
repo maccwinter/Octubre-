@@ -147,10 +147,10 @@ m = melt(data=df, id.vars=c('teamID'), measure.vars = c('H','AB'))
 m %>% group_by(teamID) %>% summarise(n=n())
 cast = dcast(m, value ~ teamID, mean)
 m
-g <- df %>% group_by(teamID)%>%gather(key = 'hits', 'amount', 'H':'HR')
+g <- df %>% gather('hits','amount', 16:20)
 g
-
-
+w = g %>% spread(hits,amount)
+w
 
 
 
