@@ -158,23 +158,28 @@ save(d3, file ="aurelia_data.Rdata")
 #Class 09/30/19 
 
 
-load("fish_data.Rdata")
+load("fish_data (1).Rdata")
 f <- fish
 head(f)
 
 #Subsetting
 fdeep <- f[f$depth_fac == "Deep",]
+head(fdeep)
 fdeep2 <- subset(x=f, f$depth_fac == "Deep")
+head(fdeep2)
 library(dplyr)
 fdeep3 <- filter(.data = f, depth_fac == "Deep")
+head(fdeep3)
 fd4 <- subset(x=f, f$depth_fac == "Deep", select = c("transect.id","area_fac"))
 head(fd4)
 fd5 <- f[which(f$depth_fac == "Deep" & f$area_fac =="East" & f$yr_fac !="2014"),]
 head(fd5)
 
 fshallow <- f[f$depth_fac == "Shallow",]
+head(fshallow)
 f2shallow <- subset(x=f, depth_fac == "Shallow")
 feast <- subset(x=f, depth_fac == "East")
+head(feast)
 f2east <- f[f$depth_fac == "East",]
 fpatches <- f[f$depth_fac == "Patches",]
 f2patches <- subset(x=f, depth_fac == "Patches")
@@ -247,11 +252,13 @@ d <- batting.2008
 str(d)
 #find sum of all home runs
 hr <- tapply(X = d$HR, INDEX = list(d$teamID), FUN=sum)
+head(hr)
 
 #Find quantile values for home runs by team. 
 #fivenum gives you: min, lower-hinge, median, upper-hinge, and max value. Hinge is quantile? What is quantile? 
 
 hr.q <- tapply(X = d$HR, INDEX = list(d$teamID), FUN=fivenum)
+hr.q
 #one category summarize 
 lg.q <- tapply(X=(d$H/d$AB), INDEX = list(d$lgID), FUN=fivenum)
 head(lg.q)
@@ -259,9 +266,10 @@ summarything <- summary(d[d$ligID == "AL",]$H/d[d$lgID == "AL",]$AB)
 #This above is the same as something else abive 
 #two category summary 
 bats <- tapply(X=d$HR, INDEX=list(d$lgID,d$bats), FUN=mean)
+bats
 #Three category summary
 bats.team <- tapply(X=d$HR, INDEX=list(d$lgID,d$teamID, d$bats), FUN=mean)
-
+bats.team
 
 #aggregate function ---- 
 # if you put four dashes after something, as written above, r will remember it and put it in table of contents (upper right)
