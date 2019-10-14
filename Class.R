@@ -151,9 +151,9 @@ g <- df %>% gather('hits','amount', 16:20)
 g
 w = g %>% spread(hits,amount)
 w
+?dcast
 
-
-
+?melt
 
 
 
