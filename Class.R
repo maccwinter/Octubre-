@@ -193,7 +193,7 @@ return(x)
 batch_data <- list.files("batch_data", full = TRUE, pattern = "ISIIS")
 batch_data
 
-phy <- adply(batch_data, 1, function(file) {da <- read.table(batch_data[1], 
+phy <- adply(.data=batch_data,.margins= 1, function(file) {da <- read.table(batch_data[1], 
                                                              sep = "\t", skip = 10, 
                                                              header = TRUE, fileEncoding = "ISO-8859-1", 
                                                              stringsAsFactors = FALSE, quote = "\"", 
