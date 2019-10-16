@@ -157,6 +157,66 @@ w
 
 head(d)
 
+#Class 10/16 ---- 
+
+
+#Loops! 
+#Allows you to split data, perform different functions on different parts of a dataset, and then put it all together
+
+library(plyr)
+
+#going to use ddply 
+#.progress tells you if theres error
+
+d <- fish[fish$depth_fac == "Deep",]
+#ddply ---- 
+
+nd <- ddply(.data=fish, .variables="depth_fac", function(x){
+
+z <- unique(x$depth_fac)
+
+
+
+depth_condition <- function(y){ 
+  if(y=="Deep") q <- 50 
+  else if(y=="Mid") q <- 25 
+  else q <- 15}
+
+x$depth_z <- depth_condition(y=z)
+
+return(x)
+
+}, .inform=T, .progress = "text")
+
+#adply ---- 
+#batch data gives us a list of files 
+batch_data <- list.files("batch_data", full = TRUE, pattern = "ISIIS")
+batch_data
+
+phy <- adply(batch_data, 1, function(file) {da <- read.table(batch_data[1], 
+                                                             sep = "\t", skip = 10, 
+                                                             header = TRUE, fileEncoding = "ISO-8859-1", 
+                                                             stringsAsFactors = FALSE, quote = "\"", 
+                                                             check.names=FALSE, encoding="UTF-8", 
+                                                             na.strings = "9999.99")
+
+#clean names 
+head <- names(d)
+head <- str_replace(head, "\\(.*\\)", "")
+head <- str_trim(head)
+head <- make.names(head)
+head <- tolower(head)
+head <- str_replace(head, fixed(".."), ".")
+#assign names
+names(d) <- head 
+
+date <- scan(batch_data[1], what = "character", skip = 1, nlines=1, quiet=TRUE)
+d$date <- date[2]
+d$dateTime <- str_c(d$date, d$time, sep = " ")
+d$dateTime <- as.POSIXct(strptime(d$dateTime, format = "%m/%d/%y %H:%M:%OS", tz = "America/New_York"))
+return(d)
+})
+
 
 
 
