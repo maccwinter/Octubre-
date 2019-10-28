@@ -170,7 +170,7 @@ library(plyr)
 
 d <- fish[fish$depth_fac == "Deep",]
 #ddply ---- 
-
+?ddply
 nd <- ddply(.data=fish, .variables="depth_fac", function(x){
 
 z <- unique(x$depth_fac)
@@ -216,6 +216,79 @@ d$dateTime <- str_c(d$date, d$time, sep = " ")
 d$dateTime <- as.POSIXct(strptime(d$dateTime, format = "%m/%d/%y %H:%M:%OS", tz = "America/New_York"))
 return(d)
 })
+
+
+#class 10/28/19 ---- 
+
+#plotting 
+
+library(ggplot2)
+load("fish_data (1).Rdata")
+
+#one geom: 
+data('economics')
+e <- economics
+head(e)
+
+unemploy <- ggplot(data=e, aes(x=date, y=unemploy)) + geom_line()
+unemploy
+
+#multiple geoms 
+
+data("presidential")
+pres <- presidential
+
+caption <-paste(strwrap("Unemployment rates in the U.S. have varied a lot over the years",40), collapse = "\n")
+yrng <- range(e$unemploy)
+xrng <- range(e$date)
+date <- as.Date("1960-01-01")
+#This stuff above is for making and positioning the caption in the graph. 
+
+ggplot(e) + 
+  geom_line(aes(x=date, y=unemploy))+
+  geom_rect(data=pres, aes(xmin=start, xmax=end, fill=party), ymin =-Inf, ymax = Inf, alpha = 0.2) +
+  scale_fill_manual(values=c("dodgerblue", "firebrick3")) +
+  geom_vline(data=pres, aes(xintercept=as.numeric(start)), colour="grey50", alpha =0.5) +
+  #geom_text(data=pres, aes(x=start, y=2500, label=name), size=3, vjust=0, hjust=0, nudge_x=50) 
+annotate("text", x=date, y=yrng[2], label=caption, hjust=0, vjust=1, size=4)
+
+#making fancy-ass graph. 
+#bar graph challenge 
+#stack bar with grouped bar 
+
+load("fish_data (1).Rdata")
+library(tidyverse)
+fs <- fish %>% group_by(area_fac, depth_fac, yr_fac) %>% summarise(parcel.count = length(parcel.id))
+head(fs)
+ggplot(fs) +
+  geom_bar(aes(x=area_fac, y=parcel.count, fill = depth_fac), position="stack", stat="identity") +
+  facet_grid(.~yr_fac)
+#could but .~ afterwords for landscape orientation 
+
+#another way to format the graph 
+
+
+ggplot(fs) +
+  geom_bar(aes(x=area_fac, y=parcel.count, fill = depth_fac), position="dodge", stat="identity") +
+  facet_grid(.~yr_fac)
+
+#or
+
+ggplot(fs) +
+  geom_bar(aes(x=yr_fac, y=parcel.count, fill = depth_fac), position="stack", stat="identity") +
+  facet_wrap(~area_fac)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
