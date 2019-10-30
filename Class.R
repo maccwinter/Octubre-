@@ -161,7 +161,8 @@ head(d)
 
 
 #Loops! 
-#Allows you to split data, perform different functions on different parts of a dataset, and then put it all together
+#Allows you to split data, perform different functions on different 
+#parts of a dataset, and then put it all together
 
 library(plyr)
 
@@ -192,7 +193,7 @@ return(x)
 #batch data gives us a list of files 
 batch_data <- list.files("batch_data", full = TRUE, pattern = "ISIIS")
 batch_data
-
+?adply
 phy <- adply(.data=batch_data,.margins= 1, function(file) {da <- read.table(batch_data[1], 
                                                              sep = "\t", skip = 10, 
                                                              header = TRUE, fileEncoding = "ISO-8859-1", 
