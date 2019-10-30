@@ -279,6 +279,57 @@ ggplot(fs) +
   geom_bar(aes(x=yr_fac, y=parcel.count, fill = depth_fac), position="stack", stat="identity") +
   facet_wrap(~area_fac)
 
+#10/30/19 ---- 
+
+load('fish_data (1).Rdata')
+library(tidyverse)
+
+ggplot(fish, aes(parcel.length.m, parcel.density.m3, color = depth_fac)) +
+  geom_point()+
+  facet_wrap(~depth_fac)
+library(plyr)
+
+ddply(.data=fish, .variables = "depth_fac", function(x){
+  name = unique(x$depth_fac)
+  pl =ggplot(fish, aes(parcel.length.m, parcel.density.m3)) +
+    geom_point()+
+    xlab('Parcel length (m)') +
+    ylab(expression(paste('Parcel Density (',m^3,')')))+
+    ggtitle(name)
+  ggsave(filename= paste0(name,'.tiff'),plot=pl, width =4, height=3, units='in',
+         dpi=600, compression = 'lzw')
+}, .progress = "text")
+
+
+ddply(.data=fish, .variables = 'transect.id', function(x){
+  name=unique(x$transect.id)
+  pl =ggplot(fish, aes(parcel.length.m, parcel.density.m3))+
+    geom_point()+
+    xlab('Parcel length(m')+
+    ylab(expression(paste('Parcel Density (',m^3,')')))+
+    ggtitle(name)
+  ggsave(filename= paste0(name,'.tiff'),plot=pl, width =4, height=3, units='in',
+         dpi=600, compression = 'lzw')
+  
+}, .progress ='text')
+
+
+# plotting 3 variables! :O 
+data('mtcars')
+names(mtcars)
+
+ggplot(mtcars, aes(vs,cyl,fill=mpg))+
+  geom_tile()
+
+ggplot(mtcars, aes(wt, mpg))+
+  geom_point(aes(color =hp))+
+  scale_color_continuous(type='viridis')+
+  theme_bw()
+
+
+
+
+
 
 
 
