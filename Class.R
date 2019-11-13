@@ -188,7 +188,7 @@ x$depth_z <- depth_condition(y=z)
 return(x)
 
 }, .inform=T, .progress = "text")
-
+nd
 #adply ---- 
 #batch data gives us a list of files 
 batch_data <- list.files("batch_data", full = TRUE, pattern = "ISIIS")
@@ -285,7 +285,7 @@ load('fish_data (1).Rdata')
 library(tidyverse)
 
 ggplot(fish, aes(parcel.length.m, parcel.density.m3, color = depth_fac)) +
-  geom_point()+
+  geom_point() +
   facet_wrap(~depth_fac)
 library(plyr)
 
@@ -327,20 +327,75 @@ ggplot(mtcars, aes(wt, mpg))+
   theme_bw()
 
 
+library(tidyverse)
+install.packages('ggmap')
+install.packages("osmdata")
+library(ggmap)
+library(osmdata)
 
 
+#downloading maps 
+LA = getbb('Louisiana')
+LA
+#Louisiana terrain map
+map = get_stamenmap(bbox = LA, zoom = 8, maptype = 'terrain')
+ggmap(map)
+ #LA toner 
+map.toner = get_stamenmap(bbox = LA, zoom = 8, maptype = 'toner-background')
+ggmap(map.toner)
 
+#Ohio watercolor map 
+map.OH = get_stamenmap(bbox = getbb('ohio'), zoom = 8, map = 'toner-lite')
+ggmap(map.OH)
+map.NM = get_stamenmap(bbox = getbb('New Mexico'), zoom = 8, map = 'terrain')
+ggmap(map.NM)
 
+getbb('Venice Italy')
+getbb('Lafayette LA')
+map.LAf <- get_stamenmap(bbox = getbb('Lafayette Louisiana'), zoom = 15, map = 'terrain')
+ggmap(map.LAf)
+#Using manual values for bbox 
+bbox = c(left = 20, bottom = 0, right = 30, top = 20)
+map.r = get_stamenmap(bbox = bbox, zoom = 6, map = 'terrain')
+ggmap(map.r)
 
+#puttin points on a map 
 
+df = read_csv('LDWF2008seine.csv')
+bb <- c(left=min(df$lon), bottom = min(df$lat), right = max(df$lon), top = max(df$lat))
+bb
 
+la.map = get_stamenmap(bbox = bb, zoom = 8, map = 'terrain-background')
+ggmap(la.map) + 
+  geom_point(data = df, aes(x=lon, y = lat))
 
+bb1 <- c(left=min(df$lon-0.2), bottom = min(df$lat-0.2), right = max(df$lon+0.2), top = max(df$lat+0.2))
+bb
+#adding color to points 
+la.map1 = get_stamenmap(bbox = bb1, zoom = 8, map = 'terrain-background')
+ggmap(la.map1) + 
+  geom_point(data = df, aes(x=lon, y = lat, color = basin)) + 
+  scale_color_manual(values=c('purple', 'blue', 'orange', 'green', 'yellow', '#d9381e'))
 
+# large mouth bass with size by abundance 
+ggmap(la.map) + 
+  geom_point(data = df, aes(x=lon, y = lat)) +
+  geom_point(data = df[df$species == "Largemouth Bass",], 
+             aes(x=lon, y=lat), color = 'red')
+# plot menhaden by abundance 
+n = df %>% group_by(species) %>% summarise(n=n())
+d = n[order(-n$n),]
 
+ggmap(la.map) + 
+  geom_point(data = df[df$species == 'Gulf Menhaden',],
+             aes(x=lon, y = lat, size = num))
 
+#black drum 
 
-
-
+ggmap(la.map) + 
+  geom_point(data = df[df$species == 'Black Drum',],
+             aes(x=lon, y = lat, size = num, color = num)) +
+  scale_color_gradientn(colors = terrain.colors(5))
 
 
 
