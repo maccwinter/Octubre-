@@ -113,10 +113,14 @@ snow <- melt(data = tempstuff2, id.vars = c("region","tow"),
              measure.vars = c("Fahrenheit1","Kelvin1",'Fahrenheit2','Kelvin2'))
 snow
 #Question 12 ----- 
+snow$region_f <- factor(snow$region, levels = c('w','c','e'))
+snow$tow_f <- factor(snow$tow, levels = c('s','m','und'))
 
 ggplot(data = snow) + 
   geom_bar(aes(x=variable, y = value), position = 'dodge', stat = 'identity') + 
-  facet_grid(tow~region) 
+  facet_grid(tow_f~region_f) +
+  theme_bw()+
+  theme(axis.text.x.bottom = element_text(size = 4) )
   
 
 
