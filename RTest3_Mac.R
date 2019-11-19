@@ -82,30 +82,31 @@ ggplot(data = spatial[spatial$region!='sof',], aes(x = pressure)) +
   geom_histogram(binwidth = 5) +
   facet_wrap(.~region) 
   
-spatial
-
+head(spatial)
 
 #Section 5 ---- 
 
  #Question 9 ----
 detach(package:plyr)
-tempstuff <- spatial %>% group_by(region!='sof', tow!='d') %>% summarise(meanT = mean(temp, na.rm = T), tst.dev = sd(temp, na.rm=T))
+tempstuff <- spatial %>% group_by(region, tow) %>% summarise(meanT = mean(temp, na.rm = T), tst.dev = sd(temp, na.rm=T), tst.dev2 = (sd(temp, na.rm=T)+mean(temp, na.rm=T)))
 tempstuff
 
 #Question 10 -----
 tempstuff$Fahrenheit <- NA
 tempstuff$Kelvin <- NA
 
-for(i in 1:nrow(w)){
+for(i in 1:nrow(tempstuff)){
   
   tempstuff[i,]$Fahrenheit <- tempstuff[i,]$tst.dev * (9/5) + 32
   tempstuff[i,]$Kelvin <- tempstuff[i,]$tst.dev + 273.15
   
 }
-
+tempstuff1 <- tempstuff[tempstuff$tow !='d',]
+tempstuff2 <- tempstuff1[tempstuff1$region !='sof',]
+head(tempstuff2)
 #Question 11 ---- 
 library(reshape2)
-snow <- melt(data = tempstuff, id.vars = c("region","tow"),measure.vars = c("Fahrenheit","Kelvin"))
+snow <- melt(data = tempstuff2, id.vars = c("region","tow"),measure.vars = c("Fahrenheit","Kelvin"))
 snow
 #Question 12 ----- 
 
