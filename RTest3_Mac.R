@@ -46,33 +46,6 @@ study.crr <- function(x){
   
   t <- str_split_fixed(string = x[['transect.id']], pattern = "-", n = 3)
   s <- t[,3]
-  
-  if(str_detect(string = s, pattern = "L")){
-    study <- "lagrangian"
-    
-   
-  } else if(str_detect(string = s, pattern = fixed("Eddy"))){
-    
-    
-  } else if(str_detect(string = s, pattern = "W")) {
-    study <- "spatial"
-    
-  } else if(str_detect(string = s, pattern = "E")) {
-    study <- "spatial"
-    
-  } else if(str_detect(string = s, pattern = "C")) {
-    study <- "spatial"
-    
-  } else {}
-  
-  return(study)
-  
-}
-
-study.crr <- function(x){
-  
-  t <- str_split_fixed(string = x[['transect.id']], pattern = "-", n = 3)
-  s <- t[,3]
 if(str_detect(string = s, pattern = fixed("Eddy"))){
     
     
@@ -116,7 +89,7 @@ spatial
 
  #Question 9 ----
 detach(package:plyr)
-tempstuff <- spatial %>% group_by(region, tow) %>% summarise(meanT = mean(temp, na.rm = T), tst.dev = sd(temp, na.rm=T))
+tempstuff <- spatial %>% group_by(region!='sof', tow!='d') %>% summarise(meanT = mean(temp, na.rm = T), tst.dev = sd(temp, na.rm=T))
 tempstuff
 
 #Question 10 -----
@@ -133,8 +106,12 @@ for(i in 1:nrow(w)){
 #Question 11 ---- 
 library(reshape2)
 snow <- melt(data = tempstuff, id.vars = c("region","tow"),measure.vars = c("Fahrenheit","Kelvin"))
-
+snow
 #Question 12 ----- 
 
-st.devplot <- ggplot(data = snow, aes(x = variable, y=value)) + geom_bar(stat = "identity", position = "dodge") + facet_grid(.~region)
+st.devplot <- ggplot(data = snow, aes(x = region, y=tow)) + geom_bar(stat = "identity", position = "dodge") + facet_grid(.~region)
+st.devplot
+
+
+
 
