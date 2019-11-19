@@ -6,19 +6,15 @@ library(dplyr)
 load('test3_data.rdata')
 #Section 1 ----
 #Question 1 ----
+head(d)
 names(d)
-
-# [1] "cruise"      "transect.id" "haul"        "area"        "tow"         "region"     
-#[7] "dateTime"    "lat"         "lon"         "depth"       "temp"        "salinity"   
-#[13] "pressure"    "sw.density"  "fluoro"      "oxygen"      "irradiance"  "region_fac" 
-#[19] "study"    
-names <- names(d)
-names
 subset <- d[,c(names)]
-subset
+head(subset)
+#aren't all fields named? so I'm not subsetting anything... 
 #Question 2 ---- 
-d1 <- arrange(subset, transect.id, dateTime)
-head(d1)
+
+d <- arrange(d, transect.id, dateTime)
+head(d)
 
 #Section 2 ---- 
 #Question 3 ---- 
@@ -26,24 +22,21 @@ dir.create("Figures")
 #Question 4 ---- 
 
 u <- d1[d1$tow == 'und',]
-time <- u$dateTime
-typeof(time)
-dateTime1 <- as.POSIXct(time, format = "%Y-%m-%d %H:%M:%OS")
-head(dateTime1)
-
+thyme <- u$dateTime
+range(thyme)
 
 ddply(.data = u, .variables = c("transect.id"), function(x){
   
   id <- unique(x$transect.id)
   
-  u.plot <- ggplot(data = x, aes(x = dateTime, y = -depth)) +
+  p.plot <- ggplot(data = x, aes(x = dateTime, y = -depth)) +
     geom_point() +
-    scale_x_continuous()
-    xlab('hour:minute')
+    scale_x_datetime(date_breaks = "15 min", date_labels = "%H:%M" )
+  
     ggtitle(label = id)
   
   ggsave(filename = paste0('Figures',id,'.png'),
-         plot = u.plot, width = 4, height = 3, units = 'in',
+         plot = p.plot, width = 4, height = 3, units = 'in',
          dpi = 300)
   
 }, .inform = T, .progress = "text")
