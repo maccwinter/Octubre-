@@ -92,21 +92,25 @@ tempstuff <- spatial %>% group_by(region, tow) %>% summarise(meanT = mean(temp, 
 tempstuff
 
 #Question 10 -----
-tempstuff$Fahrenheit <- NA
-tempstuff$Kelvin <- NA
+tempstuff$Fahrenheit1 <- NA
+tempstuff$Kelvin1 <- NA
+tempstuff$Fahrenheit2 <- NA
+tempstuff$Kelvin2 <- NA
 
 for(i in 1:nrow(tempstuff)){
   
-  tempstuff[i,]$Fahrenheit <- tempstuff[i,]$tst.dev * (9/5) + 32
-  tempstuff[i,]$Kelvin <- tempstuff[i,]$tst.dev + 273.15
-  
+  tempstuff[i,]$Fahrenheit1 <- tempstuff[i,]$tst.dev * (9/5) + 32
+  tempstuff[i,]$Kelvin1 <- tempstuff[i,]$tst.dev + 273.15
+  tempstuff[i,]$Fahrenheit2 <- tempstuff[i,]$tst.dev2 * (9/5) + 32
+  tempstuff[i,]$Kelvin2 <- tempstuff[i,]$tst.dev2 + 273.15
 }
 tempstuff1 <- tempstuff[tempstuff$tow !='d',]
 tempstuff2 <- tempstuff1[tempstuff1$region !='sof',]
 head(tempstuff2)
 #Question 11 ---- 
 library(reshape2)
-snow <- melt(data = tempstuff2, id.vars = c("region","tow"),measure.vars = c("Fahrenheit","Kelvin"))
+snow <- melt(data = tempstuff2, id.vars = c("region","tow"),
+             measure.vars = c("Fahrenheit1","Kelvin1",'Fahrenheit2','Kelvin2'))
 snow
 #Question 12 ----- 
 
