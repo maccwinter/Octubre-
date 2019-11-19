@@ -114,8 +114,11 @@ snow <- melt(data = tempstuff2, id.vars = c("region","tow"),
 snow
 #Question 12 ----- 
 
-st.devplot <- ggplot(data = snow, aes(x = region, y=tow)) + geom_bar(stat = "identity", position = "dodge") + facet_grid(.~region)
-st.devplot
+ggplot(data = snow) + 
+  geom_bar(aes(x=variable, y = value), position = 'dodge', stat = 'identity') + 
+  facet_grid(tow~region) 
+  
+
 
 
 
