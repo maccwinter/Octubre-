@@ -115,7 +115,8 @@ spatial
 #Section 5 ---- 
 
  #Question 9 ----
-tempstuff <- spatial %>% group_by(region, tow!='d') %>% summarise(meanT = mean(temp, na.rm = T), st.dev = sd(temp, na.rm=T))
+detach(package:plyr)
+tempstuff <- spatial %>% group_by(region, tow) %>% summarise(meanT = mean(temp, na.rm = T), tst.dev = sd(temp, na.rm=T))
 tempstuff
 
 #Question 10 -----
@@ -124,16 +125,16 @@ tempstuff$Kelvin <- NA
 
 for(i in 1:nrow(w)){
   
-  tempstuff[i,]$Fahrenheit <- w[i,]$st.dev * (9/5) + 32
-  tempstuff[i,]$Kelvin <- w[i,]$st.dev + 273.15
+  tempstuff[i,]$Fahrenheit <- tempstuff[i,]$tst.dev * (9/5) + 32
+  tempstuff[i,]$Kelvin <- tempstuff[i,]$tst.dev + 273.15
   
 }
 
 #Question 11 ---- 
 library(reshape2)
-snow <- melt(data = tempstuff[c(tempstuff$region != "sof",tempstuff$tow !="sof"),], id.vars = c("region","tow"),measure.vars = c("Fahrenheit","Kelvin"))
+snow <- melt(data = tempstuff, id.vars = c("region","tow"),measure.vars = c("Fahrenheit","Kelvin"))
 
 #Question 12 ----- 
 
-
+st.devplot <- ggplot(data = snow, aes(x = variable, y=value)) + geom_bar(stat = "identity", position = "dodge") + facet_grid(.~region)
 
