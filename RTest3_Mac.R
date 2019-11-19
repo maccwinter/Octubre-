@@ -21,7 +21,7 @@ head(d)
 dir.create("Figures")
 #Question 4 a - e ---- 
 
-u <- d1[d1$tow == 'und',]
+u <- d[d$tow == 'und',]
 
 ddply(.data = u, .variables = c("transect.id"), function(x){
   
@@ -39,10 +39,101 @@ ddply(.data = u, .variables = c("transect.id"), function(x){
   
 }, .inform = T, .progress = "text")
 
-#Section 3 ----- 
+#Section 3 ----- ??????? AHHHH!! 
 #Question 5 ----
 
+study.crr <- function(x){
+  
+  t <- str_split_fixed(string = x[['transect.id']], pattern = "-", n = 3)
+  s <- t[,3]
+  
+  if(str_detect(string = s, pattern = "L")){
+    study <- "lagrangian"
+    
+   
+  } else if(str_detect(string = s, pattern = fixed("Eddy"))){
+    
+    
+  } else if(str_detect(string = s, pattern = "W")) {
+    study <- "spatial"
+    
+  } else if(str_detect(string = s, pattern = "E")) {
+    study <- "spatial"
+    
+  } else if(str_detect(string = s, pattern = "C")) {
+    study <- "spatial"
+    
+  } else {}
+  
+  return(study)
+  
+}
 
+study.crr <- function(x){
+  
+  t <- str_split_fixed(string = x[['transect.id']], pattern = "-", n = 3)
+  s <- t[,3]
+if(str_detect(string = s, pattern = fixed("Eddy"))){
+    
+    
+  } else if(str_detect(string = s, pattern = "W")) {
+    study <- "spatial"
+    
+  } else if(str_detect(string = s, pattern = "E")) {
+    study <- "spatial"
+    
+  } else if(str_detect(string = s, pattern = "C")) {
+    study <- "spatial"
+    
+  } else {}
+  
+  return(study)
+  
+}
+
+
+#Question 6 ---- 
+d$study <- NA
+for(i in 1:nrow(d)){d[i,]$study <- study.crr(x = d[i,])}
+#question 7 ---- 
+d$study <- apply(X = d, MARGIN =  1, FUN = study.crr)
+#Section 4 ----
+d$studEZ<- factor(x = d$study, levels = c("spatial","eddy"),
+                     labels = c("Spatial","Eddy"))
+#Question 8 
+head(d)
+spatial <- d[d$studEZ=='Spatial',]
+head(spatial)
+
+ggplot(data = spatial[spatial$region!='sof',], aes(x = pressure)) + 
+  geom_histogram(binwidth = 5) +
+  facet_wrap(.~region) 
+  
+spatial
+
+
+#Section 5 ---- 
+
+ #Question 9 ----
+tempstuff <- spatial %>% group_by(region, tow!='d') %>% summarise(meanT = mean(temp, na.rm = T), st.dev = sd(temp, na.rm=T))
+tempstuff
+
+#Question 10 -----
+tempstuff$Fahrenheit <- NA
+tempstuff$Kelvin <- NA
+
+for(i in 1:nrow(w)){
+  
+  tempstuff[i,]$Fahrenheit <- w[i,]$st.dev * (9/5) + 32
+  tempstuff[i,]$Kelvin <- w[i,]$st.dev + 273.15
+  
+}
+
+#Question 11 ---- 
+library(reshape2)
+snow <- melt(data = tempstuff[c(tempstuff$region != "sof",tempstuff$tow !="sof"),], id.vars = c("region","tow"),measure.vars = c("Fahrenheit","Kelvin"))
+
+#Question 12 ----- 
 
 
 
