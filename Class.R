@@ -397,11 +397,63 @@ ggmap(la.map) +
              aes(x=lon, y = lat, size = num, color = num)) +
   scale_color_gradientn(colors = terrain.colors(5))
 
+#Class 11/20/19 ------ 
+library(ggmap)
+library(osmdata)
+#Task 1 
+#Using the fish or phy data set, make a map of sampling locations 
+load('ost2014_phy_t (1).robj')
+head(phy_t)
+
+names(phy_t)
+phy_t$lat
+min(phy_t$lat, na.rm = T)
+#[1] 24.29643
+max(phy_t$lat, na.rm = T)
+#[1] 26.27422
+min(phy_t$lon, na.rm = T)
+#[1] -81.73776
+max(phy_t$lon, na.rm =T)
+bb <- c(left=min(phy_t$lon, na.rm = T), bottom = min(phy_t$lat, na.rm = T), right = max(phy_t$lon, na.rm =T), top = max(phy_t$lat, na.rm = T))
+phymap <- get_stamenmap(bbox = bb, zoom = 5, map = 'terrain-background')
+
+ggmap(phymap) + 
+  geom_point(data=phy_t, aes(x=lon, y=lat))
+#task 2 
+#Using the LDWF data set make a map of every species 
+#that was caught at more than 15 sampling events  
+
+library(tidyverse)
+LD <- read_csv('LDWF2008seine.csv')
+head(LD)
 
 
+  library(dplyr)
 
+sp = LD %>% group_by(species) %>% dplyr::summarise(count = n()) 
 
+  df <-  merge(LD, sp, by ='species')
+  
+  df15 <- df[df$count >=15,]
+  head(df15)
+  
+  
+  library(plyr)
 
-
-
+head(LD)
+ddply(.data = df15, .variables = 'species', function(x){
+  
+  name <-  unique(x$species)
+  loc <- c(left=min(df15$lon, na.rm = T), bottom = min(df15$lat, na.rm = T), right = max(df15$lon, na.rm =T), top = max(df15$lat, na.rm = T))
+  speciesmap <- get_stamenmap(bbox = loc, zoom = 5, map = 'terrain-background') 
+  map <-  ggmap(speciesmap) + 
+    geom_point(data=df15, aes(x=lon, y = lat))+
+  ggtitle(name)
+  ggsave(filename= paste0(name,'.tiff'),plot=map, width =4, height=3, units='in',
+         dpi=600, compression = 'lzw')
+  
+}, .progress ='text')
+  
+  ?ggsave 
+  
 
