@@ -432,6 +432,8 @@ head(LD)
 
 sp = LD %>% group_by(species) %>% dplyr::summarise(count = n()) 
 
+head(sp)
+
   df <-  merge(LD, sp, by ='species')
   
   df15 <- df[df$count >=15,]
@@ -456,4 +458,93 @@ ddply(.data = df15, .variables = 'species', function(x){
   
   ?ggsave 
   
+
+#class 12/2/19 
+
+library(plyr)
+library(dplyr)
+library(ggplot2)
+
+load('fish_data (1).Rdata')
+head(fish)
+
+t <- fish[fish$transect.id == "OST14-1E-D",]
+
+fish <- ddply(fish, .variables = c('transect.id'), function(t) {
+
+r <- unique(t$region)
+if(r == "1W"){
+  t$tr.no <- 9
+} else if(r == "2E"){
+  t$tr.no <- 15
+} else if(r == "1E"){
+  t$tr.no <- 16
+} else if(r == "2C"){
+  t$tr.no <- 12
+} else if(r == "3C"){
+  t$tr.no <- 11
+} else if(r == "3W"){
+  t$tr.no <- 8
+} else if(r == "4W"){
+  t$tr.no <- 7
+} else if(r == "5W"){
+  t$tr.no <- 6
+} else if(r == "6E"){
+  t$tr.no <- 14
+} else if(r == "6W"){
+  t$tr.no <- 5
+} else if(r == "7E"){
+  t$tr.no <- 13
+} else if(r == "7C"){
+  t$tr.no <- 10
+} else if(r == "7W"){
+  t$tr.no <- 4
+} else if(r == "8W"){
+  t$tr.no <- 3
+} else if(r == "9W"){
+  t$tr.no <- 2
+} else if(r == "10W"){
+  t$tr.no <- 1
+}
+
+return(t)
+}, .progress = 'text')
+
+trs <- fish[c('transect.id', 'tr.no')]
+trs <- arrange(trs, tr.no)
+trs_levels <- unique(trs$transect)
+
+fish$tr <- factor(fish$transect.id, levels = trs_levels, labels = trs_levels)
+fish$log10.density <- log10(fish$parcel.density.m3 + 1)
+
+region <- c('10W', '9W', '8W', '7W', '6W', '5W', '4W', '3W', '1W', '7C', '3C', '2C', '7E', '6E', '2E', '1E')
+
+#set intervals for color bar ---- 
+
+g <- unique(fish$nice_label)
+fish$tow_f <- factor(fish$tow.depth, levels = c('S','M','D'), 
+                  labels = c('Shallow (15m)', 'Mid (30m)', 'Deep (50m)'))
+max <- round(max(fish$log10.density), digits = 2)
+intervals <- max/10 
+
+
+if(max==0) {
+  max <- round(max(fish$log10.density),3) 
+}
+
+if(intervals ==0){
+  intervals <- round(max(fish$log10.density),3)/3
+}
+
+#make plot ------ 
+
+#see the rest posted on moodle 
+
+
+
+
+
+
+
+
 
